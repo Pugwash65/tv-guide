@@ -49,6 +49,7 @@ for child in root:
          episode = child.find('episode-num')
 
          if channel_id not in channels:
+             # check desc for Sx
              raise Exception('{0}: Not in channel list'.format(channel_id))
 
          channel = channels[channel_id]
