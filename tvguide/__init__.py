@@ -1,6 +1,7 @@
 import os
 import re
 import time
+import datetime
 import requests
 import argparse
 import xml.etree.ElementTree as ET
@@ -17,11 +18,15 @@ XML_CHANNEL = 'channel'
 XML_PROGRAMME = 'programme'
 XML_ID = 'id'
 XML_DISPLAY_NAME = 'display-name'
-
+XML_TITLE = 'title'
+XML_START = 'start'
+XML_EPISODE = 'episode-num'
+XML_DESCRIPTION = 'desc'
 CACHE_TIMEOUT = 14400
 CACHE_DIR = 'cache'
 
 ARG_FEED = 'feed'
+ARG_FILE = 'file'
 ARG_QUIET = 'quiet'
 ARG_TARGET = 'target'
 ARG_SEASON = 'season'
@@ -50,6 +55,7 @@ class TvGuide:
         parser = argparse.ArgumentParser(description='Process TV Guide Arguments')
         parser.add_argument('-q', '--quiet', action='store_true')
         parser.add_argument('--feed', action='store', dest=ARG_FEED, metavar='<Feed Name>', help='Feed Shortname')
+        parser.add_argument('--file', action='store', dest=ARG_FILE, metavar='<Filename>', help='File containing search target information')
         parser.add_argument('-t', '--target', action='store', dest=ARG_TARGET, metavar='<Search Target>',
                             help='Search Target', required=True)
         parser.add_argument('-s', '--season', action='store', dest=ARG_SEASON, metavar='<Season Number>',
@@ -137,38 +143,73 @@ class TvGuide:
 
         return True
 
-    def search(self):
+    def search(self, target_title, target_season=None):
 
-        target = self.args[ARG_TARGET]
-        regexp = re.compile(target, re.IGNORECASE)
+        if target_season is not None and len(target_season) == 1:
+            target_season = target_season.zfill(2)
+
+        regexp = re.compile(target_title, re.IGNORECASE)
 
         for child in self.xml:
 
-            if child.tag == 'programme':
-                title = child.find('title')
+            if child.tag == XML_PROGRAMME:
+                title = child.find(XML_TITLE)
 
                 if title is None:
                     print
                     ET.dump(child)
                     raise Exception('Missing programme title')
 
+                ### TODO
+                print title.text
+                desc = child.find(XML_DESCRIPTION)
+                print desc.text
+                continue
+
                 if not regexp.match(title.text):
                     continue
 
-                start = child.get('start')
-                channel_id = child.get('channel')
-                episode = child.find('episode-num')
+                start = child.get(XML_START)
+                (start_time, timezone) = start.split(' ')
+                start_str = datetime.datetime.strptime(start_time, '%Y%m%d%H%M%S').strftime('%H:%M:%S %d/%m/%y (%a)')
+
+                channel_id = child.get(XML_CHANNEL)
+                episode = child.find(XML_EPISODE)
+                desc = child.find(XML_DESCRIPTION)
 
                 if channel_id not in self.channels:
-                    # check desc for Sx
                     raise Exception('{0}: Not in channel list'.format(channel_id))
 
                 channel = self.channels[channel_id]
 
-                if episode is None:
-                    print 'No series info: ', title.text, channel
+                if target_season is not None:
+                    if episode is None:
 
-                print title.text, channel
-                print episode.text
+                        # Check description for Season
 
+                        m = re.match('.+\s*S(\d)+,\s*Ep(\d+)$', desc.text)
+                        if m is not None:
+                            episode_season = m.group(1)
+                            episode_str = 's{0}.e{1}'.format(m.group(1).zfill(2), m.group(2).zfill(2))
+                        else:
+                            episode_season = None
+                    else:
+                        m = re.match('^s(\d+)\.e\d+$', episode.text)
+                        episode_season = m.group(1)
+                        episode_str = episode.text
+                else:
+                    episode_season = None
 
+                episode_str = ' ' + episode_str if episode_season is not None else ''
+                programme_text = '{0}{1} ({2}) - {3}'.format(title.text, episode_str, channel, start_str)
+
+                if episode_season is None:
+                    print 'No series info: {0}'.format(programme_text)
+                    continue
+
+                if episode_season != target_season:
+                    continue
+
+                print programme_text
+
+        return True
