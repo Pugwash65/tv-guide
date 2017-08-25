@@ -22,7 +22,7 @@ XML_TITLE = 'title'
 XML_START = 'start'
 XML_EPISODE = 'episode-num'
 XML_DESCRIPTION = 'desc'
-CACHE_TIMEOUT = 14400
+CACHE_TIMEOUT = 43200
 CACHE_DIR = 'cache'
 
 ARG_FEED = 'feed'
