@@ -6,22 +6,27 @@ import tvguide
 
 # target = 'castle' or 'ncis'
 
-### TODO: castle target
 ### TODO: Filter out non-Freeview channels
-### TODO: search for new: if no series info
 
 try:
     tv = tvguide.TvGuide()
     tv.load_feed()
     tv.load_channels()
 
+    file = tv.args[tvguide.ARG_FILE]
     target = tv.args[tvguide.ARG_TARGET]
     season = tv.args[tvguide.ARG_SEASON]
-    tv.search(target, season)
+
+    if file is not None:
+        tv.load_targets(file)
+        tv.search_targets()
+    else:
+        tv.search(target, season)
+
+    sys.exit(0)
 
 except Exception as e:
     print e
     sys.exit(1)
 
-sys.exit(0)
 

@@ -1,18 +1,25 @@
 import os
 import re
+import sys
+import yaml
 import time
+import textwrap
 import datetime
 import requests
 import argparse
 import xml.etree.ElementTree as ET
 
-FEED_DEFAULT = 'FEED72'
+FEED_DEFAULT = 'FEED7DAYS'
 
 FEED_DATA = {
             'FEED24': 'http://www.xmltv.co.uk/feed/6549',
             'FEED72': 'http://www.xmltv.co.uk/feed/6550',
             'FEED7DAYS': 'http://www.xmltv.co.uk/feed/6582'
 }
+
+### TODO do ignore channels
+
+IGNORE_CHANNELS = ['sky1', 'universal' 'fox']
 
 XML_CHANNEL = 'channel'
 XML_PROGRAMME = 'programme'
@@ -27,7 +34,9 @@ CACHE_DIR = 'cache'
 
 ARG_FEED = 'feed'
 ARG_FILE = 'file'
+ARG_DESC = 'desc'
 ARG_QUIET = 'quiet'
+ARG_TITLE = 'title'
 ARG_TARGET = 'target'
 ARG_SEASON = 'season'
 
@@ -40,6 +49,7 @@ class TvGuide:
         self.feedname = None
         self.xml = None
         self.channels = None
+        self.targets = None
 
         self.basedir = os.path.dirname(os.path.dirname(__file__))
         self.cache_dir = os.path.join(self.basedir, CACHE_DIR)
@@ -56,19 +66,25 @@ class TvGuide:
         parser.add_argument('-q', '--quiet', action='store_true')
         parser.add_argument('--feed', action='store', dest=ARG_FEED, metavar='<Feed Name>', help='Feed Shortname')
         parser.add_argument('--file', action='store', dest=ARG_FILE, metavar='<Filename>', help='File containing search target information')
+        parser.add_argument('--desc', action='store_true', dest=ARG_DESC, help='Show description as well')
         parser.add_argument('-t', '--target', action='store', dest=ARG_TARGET, metavar='<Search Target>',
-                            help='Search Target', required=True)
+                            help='Search Target')
         parser.add_argument('-s', '--season', action='store', dest=ARG_SEASON, metavar='<Season Number>',
                             help='Season ' 'Number')
 
         args = parser.parse_args()
 
+        if args.target is None and args.file is None:
+            raise Exception('--target or --file is required')
+
         return args
 
-    def out_print(self, msg):
+    def out_print(self, msg, flush=False):
 
         if not self.args[ARG_QUIET]:
-            print msg
+            sys.stdout.write(msg)
+            if flush:
+                sys.stdout.flush()
 
         return True
 
@@ -76,7 +92,7 @@ class TvGuide:
 
         feed_url = FEED_DATA[feedname]
 
-        self.out_print('Fetching feed {0}'.format(feedname))
+        self.out_print("Fetching feed {0}\n".format(feedname))
 
         r = requests.get(feed_url)
 
@@ -87,7 +103,7 @@ class TvGuide:
         f.write(r.text)
         f.close
 
-        self.out_print('Cached feed {0}'.format(feedname))
+        self.out_print("Cached feed {0}\n".format(feedname))
         return True
 
     def load_feed(self):
@@ -102,6 +118,7 @@ class TvGuide:
 
         else:
             feedname = FEED_DEFAULT
+            self.args[ARG_FEED] = feedname
 
         self.feedname = feedname
 
@@ -117,15 +134,39 @@ class TvGuide:
             if (now - t) > CACHE_TIMEOUT:
                 self.cache_feed(cache_name, feedname)
 
+        self.out_print('{0}: Loading cached feed....'.format(feedname), True)
+
         f = open(cache_name, 'r')
         xml_text = f.read()
         f.close()
 
+        self.out_print("done\n")
+
+        self.out_print('{0}: Parsing XML....'.format(feedname), True)
+
         self.xml = ET.fromstring(xml_text)
+
+        self.out_print("done\n")
+
+        return True
+
+    def load_targets(self, file):
+
+        f = open(file, 'r')
+        yaml_data = f.read()
+        f.close()
+
+        targets = yaml.load(yaml_data)
+
+        self.targets = targets
 
         return True
 
     def load_channels(self):
+
+        feedname = self.args[ARG_FEED]
+
+        self.out_print('{0}: Loading Channel Data...'.format(feedname), True)
 
         self.channels = {}
 
@@ -141,14 +182,32 @@ class TvGuide:
 
                 self.channels[channel_id] = channel_name.text
 
+        self.out_print("done\n")
+
         return True
+
+    def search_targets(self):
+
+        for target in self.targets:
+
+            if ARG_TITLE not in target or ARG_SEASON not in target:
+                raise Exception('Invalid target data: Missing title or season')
+
+            self.search(target[ARG_TITLE], str(target[ARG_SEASON]))
+
+        sys.exit()
 
     def search(self, target_title, target_season=None):
 
-        if target_season is not None and len(target_season) == 1:
-            target_season = target_season.zfill(2)
+        feedname = self.args[ARG_FEED]
 
-        regexp = re.compile(target_title, re.IGNORECASE)
+        if target_season is not None and len(target_season) == 1:
+            target_season = int(target_season)
+
+        target_regexp = '{0}|new:\s*{0}'.format(target_title)
+        regexp = re.compile(target_regexp, re.IGNORECASE)
+
+        count = 0
 
         for child in self.xml:
 
@@ -159,6 +218,11 @@ class TvGuide:
                     print
                     ET.dump(child)
                     raise Exception('Missing programme title')
+
+                count += 1
+
+                if count % 10 == 0:
+                    self.out_print("{0}: Searching - {1}\r".format(feedname, count), True)
 
                 if not regexp.match(title.text):
                     continue
@@ -182,13 +246,13 @@ class TvGuide:
 
                     m = re.match('.+\s*\(?S\s*(\d+),?\s*Ep\s*(\d+)\)?$', desc.text)
                     if m is not None:
-                        episode_season = m.group(1)
+                        episode_season = int(m.group(1))
                         episode_str = 's{0}.e{1}'.format(m.group(1).zfill(2), m.group(2).zfill(2))
                     else:
                         episode_season = None
                 else:
                     m = re.match('^s(\d+)\.e\d+$', episode.text)
-                    episode_season = m.group(1)
+                    episode_season = int(m.group(1))
                     episode_str = episode.text
 
                 episode_str = ' ' + episode_str if episode_season is not None else ''
@@ -196,15 +260,16 @@ class TvGuide:
 
                 if episode_season is None:
                     print 'No series info: {0}'.format(programme_text)
-                    print desc.text
+                    print "\t" + "\n\t".join(textwrap.wrap(desc.text, 60))
                     continue
-
-                # print desc if flag set - add to arg list
-                # search for new: XXXX
 
                 if target_season is not None and episode_season != target_season:
                     continue
 
                 print programme_text
+                if self.args[ARG_DESC]:
+                    print "\t" + "\n\t".join(textwrap.wrap(desc.text, 60))
+
+        self.out_print("\n")
 
         return True
