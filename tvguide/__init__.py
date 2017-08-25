@@ -160,12 +160,6 @@ class TvGuide:
                     ET.dump(child)
                     raise Exception('Missing programme title')
 
-                ### TODO
-                print title.text
-                desc = child.find(XML_DESCRIPTION)
-                print desc.text
-                continue
-
                 if not regexp.match(title.text):
                     continue
 
@@ -182,32 +176,33 @@ class TvGuide:
 
                 channel = self.channels[channel_id]
 
-                if target_season is not None:
-                    if episode is None:
+                if episode is None:
 
-                        # Check description for Season
+                    # Check description for Season
 
-                        m = re.match('.+\s*S(\d)+,\s*Ep(\d+)$', desc.text)
-                        if m is not None:
-                            episode_season = m.group(1)
-                            episode_str = 's{0}.e{1}'.format(m.group(1).zfill(2), m.group(2).zfill(2))
-                        else:
-                            episode_season = None
-                    else:
-                        m = re.match('^s(\d+)\.e\d+$', episode.text)
+                    m = re.match('.+\s*\(?S\s*(\d+),?\s*Ep\s*(\d+)\)?$', desc.text)
+                    if m is not None:
                         episode_season = m.group(1)
-                        episode_str = episode.text
+                        episode_str = 's{0}.e{1}'.format(m.group(1).zfill(2), m.group(2).zfill(2))
+                    else:
+                        episode_season = None
                 else:
-                    episode_season = None
+                    m = re.match('^s(\d+)\.e\d+$', episode.text)
+                    episode_season = m.group(1)
+                    episode_str = episode.text
 
                 episode_str = ' ' + episode_str if episode_season is not None else ''
                 programme_text = '{0}{1} ({2}) - {3}'.format(title.text, episode_str, channel, start_str)
 
                 if episode_season is None:
                     print 'No series info: {0}'.format(programme_text)
+                    print desc.text
                     continue
 
-                if episode_season != target_season:
+                # print desc if flag set - add to arg list
+                # search for new: XXXX
+
+                if target_season is not None and episode_season != target_season:
                     continue
 
                 print programme_text
