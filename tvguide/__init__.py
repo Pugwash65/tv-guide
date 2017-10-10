@@ -31,6 +31,12 @@ XML_EPISODE = 'episode-num'
 XML_DESCRIPTION = 'desc'
 CACHE_TIMEOUT = 43200
 CACHE_DIR = 'cache'
+DATA_DIR = 'data'
+DATA_CHANNELS = 'channels.yaml'
+
+YAML_UNCLASSIFIED = 'unknown'
+YAML_INCLUDE = 'include'
+YAML_EXCLUDE = 'exclude'
 
 ARG_FEED = 'feed'
 ARG_FILE = 'file'
@@ -39,6 +45,7 @@ ARG_QUIET = 'quiet'
 ARG_TITLE = 'title'
 ARG_TARGET = 'target'
 ARG_SEASON = 'season'
+ARG_CHANNELS = 'channels'
 
 
 class TvGuide:
@@ -53,6 +60,7 @@ class TvGuide:
 
         self.basedir = os.path.dirname(os.path.dirname(__file__))
         self.cache_dir = os.path.join(self.basedir, CACHE_DIR)
+        self.data_dir = os.path.join(self.basedir, DATA_DIR)
 
         if not os.path.isdir(self.cache_dir):
             os.mkdir(self.cache_dir)
@@ -64,6 +72,7 @@ class TvGuide:
 
         parser = argparse.ArgumentParser(description='Process TV Guide Arguments')
         parser.add_argument('-q', '--quiet', action='store_true')
+        parser.add_argument('--channels', action='store_true', dest=ARG_CHANNELS, help='Generate Channel YAML')
         parser.add_argument('--feed', action='store', dest=ARG_FEED, metavar='<Feed Name>', help='Feed Shortname')
         parser.add_argument('--file', action='store', dest=ARG_FILE, metavar='<Filename>', help='File containing search target information')
         parser.add_argument('--desc', action='store_true', dest=ARG_DESC, help='Show description as well')
@@ -74,17 +83,17 @@ class TvGuide:
 
         args = parser.parse_args()
 
-        if args.target is None and args.file is None:
-            raise Exception('--target or --file is required')
+        if args.target is None and args.file is None and args.channels is False:
+            raise Exception('--channels, --target or --file is required')
 
         return args
 
     def out_print(self, msg, flush=False):
 
         if not self.args[ARG_QUIET]:
-            sys.stdout.write(msg)
+            sys.stderr.write(msg)
             if flush:
-                sys.stdout.flush()
+                sys.stderr.flush()
 
         return True
 
@@ -186,14 +195,52 @@ class TvGuide:
 
         return True
 
+    def channel_data(self):
+
+        channel_file = os.path.join(self.data_dir, DATA_CHANNELS)
+
+        # Load existing channel map
+
+        if os.path.isfile(channel_file):
+            f = open(channel_file, 'r')
+            yaml_data = f.read()
+            f.close()
+
+            data = yaml.load(yaml_data)
+
+            if YAML_UNCLASSIFIED in data:
+                c = len(data[YAML_UNCLASSIFIED])
+                print "{0} unclassified channels in {1}".format(c, channel_file)
+                return True
+
+        # Write updated channel map
+
+        f = open(channel_file, 'w')
+
+        f.write("{0}: \n".format(YAML_UNCLASSIFIED))
+
+        names = self.channels.values()
+
+        print names.sort
+        xxx
+        for name in names:
+            f.write("  - {0}\n".format(name))
+
+        f.close()
+
+        return True
+
     def search_targets(self):
 
         for target in self.targets:
 
-            if ARG_TITLE not in target or ARG_SEASON not in target:
+            if ARG_TITLE not in target and ARG_SEASON not in target:
                 raise Exception('Invalid target data: Missing title or season')
 
-            self.search(target[ARG_TITLE], str(target[ARG_SEASON]))
+            title = target[ARG_TITLE]
+            season = str(target[ARG_SEASON]) if ARG_SEASON in target else None
+
+            self.search(title, season)
 
         sys.exit()
 

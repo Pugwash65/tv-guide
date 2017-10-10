@@ -13,11 +13,14 @@ try:
     tv.load_feed()
     tv.load_channels()
 
+    channels = tv.args[tvguide.ARG_CHANNELS]
     file = tv.args[tvguide.ARG_FILE]
     target = tv.args[tvguide.ARG_TARGET]
     season = tv.args[tvguide.ARG_SEASON]
 
-    if file is not None:
+    if channels:
+        tv.channel_data()
+    elif file is not None:
         tv.load_targets(file)
         tv.search_targets()
     else:
@@ -28,5 +31,3 @@ try:
 except Exception as e:
     print e
     sys.exit(1)
-
-
