@@ -17,10 +17,6 @@ FEED_DATA = {
             'FEED7DAYS': 'http://www.xmltv.co.uk/feed/6582'
 }
 
-### TODO do ignore channels
-
-IGNORE_CHANNELS = ['sky1', 'universal' 'fox']
-
 XML_CHANNEL = 'channel'
 XML_PROGRAMME = 'programme'
 XML_ID = 'id'
@@ -34,7 +30,7 @@ CACHE_DIR = 'cache'
 DATA_DIR = 'data'
 DATA_CHANNELS = 'channels.yaml'
 
-YAML_UNCLASSIFIED = 'unknown'
+YAML_UNCLASSIFIED = 'unclassified'
 YAML_INCLUDE = 'include'
 YAML_EXCLUDE = 'exclude'
 
@@ -67,6 +63,8 @@ class TvGuide:
 
         if not os.path.isdir(self.cache_dir):
             raise Exception('Unable to create cache directory')
+
+        self.channel_file = os.path.join(self.data_dir, DATA_CHANNELS)
 
     def parse_args(self):
 
@@ -112,7 +110,8 @@ class TvGuide:
         f.write(r.text)
         f.close
 
-        self.out_print("Cached feed {0}\n".format(feedname))
+        self.out_print("{0}: Feed cached\n".format(feedname), True)
+
         return True
 
     def load_feed(self):
@@ -179,6 +178,15 @@ class TvGuide:
 
         self.channels = {}
 
+        if not os.path.isfile(self.channel_file):
+            raise Exception('{0}: Channel classification file missing'.format(self.channel_file))
+
+        f = open(self.channel_file, 'r')
+        yaml_data = f.read()
+        f.close()
+
+        data = yaml.load(yaml_data, Loader=yaml.loader.BaseLoader)
+
         for child in self.xml:
             if child.tag == XML_CHANNEL:
                 channel_id = child.get(XML_ID)
@@ -189,7 +197,8 @@ class TvGuide:
                     ET.dump(child)
                     raise Exception('Missing channel id or name')
 
-                self.channels[channel_id] = channel_name.text
+                if channel_name.text in data[YAML_INCLUDE]:
+                    self.channels[channel_id] = channel_name.text
 
         self.out_print("done\n")
 
@@ -197,34 +206,38 @@ class TvGuide:
 
     def channel_data(self):
 
-        channel_file = os.path.join(self.data_dir, DATA_CHANNELS)
-
         # Load existing channel map
 
-        if os.path.isfile(channel_file):
-            f = open(channel_file, 'r')
+        if os.path.isfile(self.channel_file):
+            f = open(self.channel_file, 'r')
             yaml_data = f.read()
             f.close()
 
-            data = yaml.load(yaml_data)
+            data = yaml.load(yaml_data, Loader=yaml.loader.BaseLoader)
 
-            if YAML_UNCLASSIFIED in data:
+            if YAML_UNCLASSIFIED in data and len(data[YAML_UNCLASSIFIED]) > 0:
                 c = len(data[YAML_UNCLASSIFIED])
-                print "{0} unclassified channels in {1}".format(c, channel_file)
+                print "{0} unclassified channels in {1}".format(c, self.channel_file)
                 return True
+
+            data[YAML_UNCLASSIFIED] = []
+
+            for name in self.channels.values():
+
+                if name not in data[YAML_EXCLUDE] and name not in data[YAML_INCLUDE]:
+                    print '{0}: Unclassified channel in feed'.format(name)
+                    data[YAML_UNCLASSIFIED].append(name)
 
         # Write updated channel map
 
-        f = open(channel_file, 'w')
+        f = open(self.channel_file, 'w')
 
-        f.write("{0}: \n".format(YAML_UNCLASSIFIED))
+        for key in [YAML_INCLUDE, YAML_EXCLUDE, YAML_UNCLASSIFIED]:
+            f.write("{0}: \n".format(key))
 
-        names = self.channels.values()
-
-        print names.sort
-        xxx
-        for name in names:
-            f.write("  - {0}\n".format(name))
+            channels = sorted(data[key])
+            for channel in channels:
+                f.write("  - {0}\n".format(channel))
 
         f.close()
 
@@ -282,8 +295,10 @@ class TvGuide:
                 episode = child.find(XML_EPISODE)
                 desc = child.find(XML_DESCRIPTION)
 
+                # Channel isn't one we're interested in - or perhaps is undefined in XML
+
                 if channel_id not in self.channels:
-                    raise Exception('{0}: Not in channel list'.format(channel_id))
+                    continue
 
                 channel = self.channels[channel_id]
 

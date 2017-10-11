@@ -1,0 +1,568 @@
+include:
+  - 4Music
+  - 5 USA
+  - 5 USA +1
+  - 5STAR
+  - 5STAR +1
+  - BBC Four
+  - BBC NEWS
+  - BBC One W Mid
+  - BBC Two Eng
+  - CBBC
+  - CBS Action
+  - CBS Drama
+  - CBS Reality
+  - CBS Reality+1
+  - CBeebies
+  - CITV
+  - Channel 4
+  - Channel 4
+  - Channel 4
+  - Channel 4
+  - Channel 4
+  - Channel 4
+  - Channel 4 +1
+  - Channel 4 +1
+  - Channel 4 +1
+  - Channel 4 +1
+  - Channel 4 +1
+  - Channel 5
+  - Channel 5+1
+  - Dave
+  - E4
+  - E4+1
+  - Film4
+  - Film4 +1
+  - ITV
+  - ITV
+  - ITV
+  - ITV
+  - ITV
+  - ITV
+  - ITV
+  - ITV
+  - ITV
+  - ITV
+  - ITV
+  - ITV
+  - ITV
+  - ITV
+  - ITV +1
+  - ITV +1
+  - ITV +1
+  - ITV +1
+  - ITV +1
+  - ITV +1
+  - ITV +1
+  - ITV +1
+  - ITV +1
+  - ITV Encore
+  - ITV Encore+1
+  - ITV2
+  - ITV2+1
+  - ITV3
+  - ITV3+1
+  - ITV4
+  - ITV4+1
+  - More4
+  - More4 +1
+  - Spike
+  - Spike + 1
+  - Tiny Pop
+  - Tiny Pop +1
+exclude:
+  - 22617
+  - 3100
+  - 3838
+  - 3839
+  - 3940
+  - 4030
+  - 4seven
+  - 50445
+  - 50450
+  - 50455
+  - 50460
+  - 50465
+  - 50470
+  - 50475
+  - 50480
+  - 50485
+  - 50490
+  - 50495
+  - 8900
+  - 8900
+  - AAJ TAK
+  - ABN TV
+  - ABP News
+  - AIT Int'l
+  - AMC from BT
+  - AMC from BTHD
+  - ARY Digital
+  - ATN Bangla UK
+  - Aastha
+  - Abu Dhabi TV
+  - Adult Channel
+  - Ahlebait TV
+  - Ahlulbayt TV
+  - Akaal Channel
+  - Al Arabiya
+  - Al Jazeera Eng
+  - Animal Planet
+  - Animal Plnt+1
+  - Anytime
+  - Aplus TV
+  - At The Races
+  - B4U Movies
+  - B4U Music
+  - BBC ALBA
+  - BBC One CI
+  - BBC One E Mid
+  - BBC One East E
+  - BBC One East W
+  - BBC One Lon
+  - BBC One N West
+  - BBC One NEandC
+  - BBC One NI
+  - BBC One Oxford
+  - BBC One S East
+  - BBC One S West
+  - BBC One Scot
+  - BBC One South
+  - BBC One Wales
+  - BBC One West
+  - BBC One YkandLi
+  - BBC One Yorks
+  - BBC Parliament
+  - BBC RB1
+  - BBC Two NI
+  - BBC Two Scot
+  - BBC Two Wales
+  - BEN
+  - BET:BlackEntTv
+  - BLAZE
+  - BT Sport 1
+  - BT Sport 1 HD
+  - BT Sport 2
+  - BT Sport 3
+  - BT Sport 3 HD
+  - BT Sport//ESPN
+  - Babenation
+  - BabyTV
+  - Bangla TV
+  - Bangla TV
+  - Believe TV
+  - Best Direct
+  - Bike
+  - Bike
+  - Bloomberg
+  - Bloomberg HD
+  - Boomerang
+  - Boomerang
+  - Boomerang +1
+  - Boomerang +1
+  - Box Hits
+  - Box Upfront
+  - BoxNation
+  - BoxNation HD
+  - Brit Asia TV
+  - British Muslim
+  - CAPITAL TV
+  - CGTN
+  - CHSTV
+  - CN+1
+  - CN+1
+  - CNBC
+  - CNC World
+  - CNN
+  - CNN
+  - CNN HD
+  - CNN HD
+  - COLORS
+  - Cartoon Netwrk
+  - Cartoon Netwrk
+  - Cartoonito
+  - Challenge
+  - Challenge+1
+  - Channel 4 HD
+  - Channel 44
+  - Channel 44
+  - Channel 5HD
+  - Channel AKA
+  - Channel i
+  - Channel i
+  - Channels 24
+  - Chart Show TV
+  - Chartshow Hits
+  - Chat Box
+  - Chelsea TV
+  - Chelsea TV HD
+  - Chilled 90s
+  - Climax
+  - Clubland TV
+  - ComedyCent+1
+  - ComedyCentral
+  - ComedyXtra
+  - ComedyXtra+1
+  - Community
+  - Craft Extra
+  - Create and Craft
+  - Crime+Inv
+  - Crime+Inv +1
+  - CruiseDealsTV
+  - CruiseSaversTV
+  - DBN
+  - DM Plus TV
+  - DM Plus TV
+  - DM Plus TV
+  - DMAX
+  - DMAX+1
+  - Dave ja vu
+  - Disc.History
+  - Disc.History+1
+  - Disc.Sci+1
+  - Disc.Science
+  - Disc.Turbo
+  - Discovery
+  - Discovery Shed
+  - Discovery+1
+  - Disney Chnl
+  - Disney Chnl+1
+  - Disney Junior
+  - Disney Junior+
+  - Disney XD
+  - Disney XD+1
+  - Drama
+  - Dunya News
+  - E!
+  - E! +1
+  - E4 HD
+  - EWTN Catholic
+  - Eden
+  - Eden+1
+  - Eman Channel
+  - Euronews
+  - Eurosport 1
+  - Eurosport 1 HD
+  - Eurosport 2
+  - Eurosport 2 HD
+  - ExGirlfriends
+  - FOX
+  - FOX News
+  - FOX+1
+  - FRANCE Eng
+  - Faith World TV
+  - Film4 HD
+  - Flava
+  - Flava
+  - Flow TV
+  - Food Network
+  - Food Netwrk+1
+  - Forces TV
+  - FreeSports
+  - FrontRunner
+  - GEO News
+  - GEO News
+  - GEO TEZ
+  - GEO TV
+  - GINXeSportsTV
+  - GOD Channel
+  - GOLD
+  - GOLD +1
+  - GR SHOP
+  - Gay Network
+  - Gems TV
+  - Get Lucky TV
+  - Get Lucky TV
+  - Glory TV
+  - Good Food
+  - Good Food +1
+  - Gospel Channel
+  - H2
+  - HUM EUROPE
+  - Heart TV
+  - Hidayat TV
+  - High Street TV
+  - High Street TV 2
+  - High Street TV 3
+  - Hillsong
+  - History
+  - History +1 hour
+  - Hochanda
+  - Home
+  - Home and Health
+  - Home and Leisure
+  - Home and Leisure
+  - Home and Leisure
+  - Home+1
+  - HomeHealth+1
+  - Horse and Country
+  - ID
+  - ID+1
+  - IQRA BANGLA
+  - IQRA TV
+  - ITV Border
+  - ITVBe
+  - ITVBe+1
+  - Ideal Extra
+  - Ideal World
+  - Insight HD
+  - Inspiration TV
+  - Islam Ch Urdu
+  - Islam Channel
+  - JML Direct
+  - JUS Punjabi
+  - Jewelry Maker
+  - KICC TV
+  - KISS
+  - KTV
+  - Keep It Country
+  - Kerrang!
+  - Kix
+  - Kix+1
+  - LFCTV
+  - LOVEWORLD TV
+  - Lifetime
+  - Lifetime HD
+  - Lifetime+1
+  - London Live
+  - Lucky Star
+  - Lucky Star
+  - MATV National
+  - MTV
+  - MTV BASE
+  - MTV CLASSIC
+  - MTV DANCE
+  - MTV HITS
+  - MTV MUSIC
+  - MTV Music +1
+  - MTV ROCKS
+  - MTV+1
+  - MUTV
+  - MUTV HD
+  - Madani Chnl
+  - Made In Bristol
+  - Made In Leeds
+  - Made In TnandWr
+  - Made In TnandWr
+  - Made in Bham
+  - Magic
+  - More4 HD
+  - Motorsport TV
+  - Movies 24
+  - Movies24+
+  - My5
+  - NDTV 24x7
+  - NOW 80s
+  - NTV
+  - Nat Geo
+  - Nat Geo Wild
+  - Nat Geo+1hr
+  - New Vision +1
+  - New Vision TV
+  - News18
+  - Nick Jr Too
+  - Nick Jr+1
+  - Nick Jr.
+  - Nick Jr. HD
+  - Nickelodeon
+  - Nickelodeon+1
+  - Nicktoons
+  - Nollywood
+  - Noor TV
+  - Notts TV
+  - Olive TV
+  - PBS America
+  - PCNE Chinese
+  - POP
+  - POP+1
+  - PTC PUNJABI
+  - PTV Global
+  - PTV Prime
+  - PaversShoes.tv
+  - Peace TV
+  - Peace TV Urdu
+  - Pick
+  - Pick+1
+  - Playboy TV
+  - PlayboyTV Chat
+  - Premier Sports
+  - Property Show
+  - Psychic Today
+  - QUEST
+  - QUEST
+  - QUEST
+  - QUEST+1
+  - QVC
+  - QVC Beauty
+  - QVC EXTRA
+  - QVC Style
+  - Quest Red
+  - Quest Red+1
+  - ROK
+  - RT
+  - Racing UK
+  - Real Lives
+  - Real Lives+1
+  - Really
+  - Retail TV
+  - Rishtey
+  - RishteyCine
+  - Rocks and Co 1
+  - S4C
+  - S4C HD
+  - SEE TV
+  - SONY MAX
+  - SONY SAB
+  - SONY TV
+  - STV
+  - Safeer TV
+  - Samaa
+  - Samaa
+  - Sangat
+  - Scuzz
+  - Showcase
+  - Showcase 3
+  - Showcase+1
+  - Sikh Channel
+  - Sky Action
+  - Sky Arts
+  - Sky Atlantic
+  - Sky Atlantic+1
+  - Sky AtlanticVIP
+  - Sky Comedy
+  - Sky Disney
+  - Sky DramaRom
+  - Sky Family
+  - Sky Family HD
+  - Sky Greats
+  - Sky Hits
+  - Sky Living
+  - Sky Living+1
+  - Sky News
+  - Sky Prem+1
+  - Sky Premiere
+  - Sky ScFi/Horror
+  - Sky Select
+  - Sky Select HD
+  - Sky Sp NewsHQ
+  - Sky Sports 1
+  - Sky Sports 2
+  - Sky Sports 3
+  - Sky Sports 4
+  - Sky Sports 5
+  - Sky Sports F1
+  - Sky Sports Mix
+  - Sky Thriller
+  - Sky Thriller HD
+  - Sky1
+  - Sky1 +1
+  - Sky2
+  - SkyNws Arabia
+  - SkyPremiereHD
+  - SkySpBoxOff
+  - SkySpBoxOffHD
+  - SonLife
+  - Sony Channel
+  - Sony Chnl +1
+  - Sony Movies
+  - Sony Movies+1
+  - Sports Active
+  - Star GOLD
+  - Star Life OK
+  - Star Plus
+  - Star Plus HD
+  - Star Utsav
+  - Starz TV
+  - Studio 66
+  - Studio 66 2
+  - Studio 66 3
+  - Syfy
+  - Syfy +1
+  - TBN UK
+  - TCM
+  - TCM+1
+  - TJC
+  - TJC Choice
+  - TLC
+  - TLC+1
+  - TLC+2
+  - TRT World
+  - TV 99
+  - TV One
+  - TV Warehouse
+  - TV5 MONDE
+  - TVC News
+  - TVC News +1
+  - TVXpornstars
+  - Takbeer TV
+  - TalkingPictures
+  - Television X
+  - Thane
+  - The Box
+  - The Dept Store
+  - The Vault
+  - Times Now
+  - Times Now
+  - Travel Ch +1
+  - Travel Channel
+  - Tristar
+  - True Crime
+  - True Ent
+  - True Ent +1
+  - True Movies
+  - True Movies+1
+  - Ummah CH
+  - Ummah CH
+  - Universal
+  - Universal+1
+  - Urdu1 Europe
+  - Urdu1 Europe
+  - V Channel
+  - V Channel
+  - VH1
+  - VICELAND
+  - VIVA
+  - Venus TV
+  - Vintage TV
+  - Vox Africa
+  - Vox Africa
+  - Vox Africa
+  - Vox Africa
+  - W
+  - W +1
+  - Word Network
+  - XXX 18 and Dirty
+  - XXX Brits
+  - XXX Girl Girl
+  - XXX HomeVids
+  - XXX Mums
+  - XXX Real Wives
+  - XXX Swingers
+  - XXX Taboo
+  - Xpanded TV
+  - YESTERDAY
+  - YESTERDAY+1
+  - YourTV
+  - Zee Cinema
+  - Zee Cinema
+  - Zee Punjabi
+  - Zee Punjabi
+  - Zee TV
+  - Zing
+  - Zing
+  - alibi
+  - alibi +1
+  - andTV
+  - holiday+cruise
+  - horror ch+1
+  - horror channel
+  - mov4men+1
+  - movies4men
+  - mta-muslim tv
+  - propeller
+  - revelation
+  - tru TV
+  - xrated40+
+  - xratedcouples
+  - xratedhookups
+unclassified: 
