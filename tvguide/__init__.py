@@ -38,9 +38,11 @@ ARG_FEED = 'feed'
 ARG_FILE = 'file'
 ARG_DESC = 'desc'
 ARG_QUIET = 'quiet'
+ARG_BATCH = 'batch'
 ARG_TITLE = 'title'
 ARG_TARGET = 'target'
 ARG_SEASON = 'season'
+ARG_CHANNEL = 'channel'
 ARG_CHANNELS = 'channels'
 
 
@@ -70,6 +72,7 @@ class TvGuide:
 
         parser = argparse.ArgumentParser(description='Process TV Guide Arguments')
         parser.add_argument('-q', '--quiet', action='store_true')
+        parser.add_argument('-b', '--batch', action='store_true')
         parser.add_argument('--channels', action='store_true', dest=ARG_CHANNELS, help='Generate Channel YAML')
         parser.add_argument('--feed', action='store', dest=ARG_FEED, metavar='<Feed Name>', help='Feed Shortname')
         parser.add_argument('--file', action='store', dest=ARG_FILE, metavar='<Filename>', help='File containing search target information')
@@ -88,13 +91,17 @@ class TvGuide:
 
     def out_print(self, msg, flush=False):
 
-        if not self.args[ARG_QUIET]:
+        if not self.args[ARG_QUIET] and not self.args[ARG_BATCH]:
             sys.stderr.write(msg)
             if flush:
                 sys.stderr.flush()
 
         return True
 
+    def result(self, msg):
+
+        print msg
+        return True
     def cache_feed(self, cache_name, feedname):
 
         feed_url = FEED_DATA[feedname]
@@ -252,12 +259,13 @@ class TvGuide:
 
             title = target[ARG_TITLE]
             season = str(target[ARG_SEASON]) if ARG_SEASON in target else None
+            channel = str(target[ARG_CHANNEL]) if ARG_CHANNEL in target else None
 
-            self.search(title, season)
+            self.search(title, season, channel)
 
         sys.exit()
 
-    def search(self, target_title, target_season=None):
+    def search(self, target_title, target_season=None, target_channel=None):
 
         feedname = self.args[ARG_FEED]
 
@@ -266,6 +274,7 @@ class TvGuide:
 
         target_regexp = '{0}|new:\s*{0}'.format(target_title)
         regexp = re.compile(target_regexp, re.IGNORECASE)
+        channel_regexp = re.compile('^{0}'.format(target_channel), re.IGNORECASE)
 
         count = 0
 
@@ -282,7 +291,7 @@ class TvGuide:
                 count += 1
 
                 if count % 10 == 0:
-                    self.out_print("{0}: Searching - {1}\r".format(feedname, count), True)
+                    self.out_print("{0}: {1}: Searching - {2}\r".format(feedname, target_title, count), True)
 
                 if not regexp.match(title.text):
                     continue
@@ -302,6 +311,9 @@ class TvGuide:
 
                 channel = self.channels[channel_id]
 
+		if target_channel is not None and not channel_regexp.match(channel):
+		        continue
+	
                 if episode is None:
 
                     # Check description for Season
@@ -321,16 +333,16 @@ class TvGuide:
                 programme_text = '{0}{1} ({2}) - {3}'.format(title.text, episode_str, channel, start_str)
 
                 if episode_season is None:
-                    print 'No series info: {0}'.format(programme_text)
-                    print "\t" + "\n\t".join(textwrap.wrap(desc.text, 60))
+                    self.result('No series info: {0}'.format(programme_text))
+                    self.result("\t" + "\n\t".join(textwrap.wrap(desc.text, 60)))
                     continue
 
                 if target_season is not None and episode_season != target_season:
                     continue
 
-                print programme_text
+                self.result(programme_text)
                 if self.args[ARG_DESC]:
-                    print "\t" + "\n\t".join(textwrap.wrap(desc.text, 60))
+                    self.result("\t" + "\n\t".join(textwrap.wrap(desc.text, 60)))
 
         self.out_print("\n")
 
