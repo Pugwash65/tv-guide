@@ -26,6 +26,8 @@ try:
     else:
         tv.search(target, season)
 
+    tv.results()
+
     sys.exit(0)
 
 except Exception as e:

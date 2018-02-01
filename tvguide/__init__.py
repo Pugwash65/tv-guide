@@ -55,6 +55,7 @@ class TvGuide:
         self.xml = None
         self.channels = None
         self.targets = None
+        self.results = []
 
         self.basedir = os.path.dirname(os.path.dirname(__file__))
         self.cache_dir = os.path.join(self.basedir, CACHE_DIR)
@@ -100,8 +101,14 @@ class TvGuide:
 
     def result(self, msg):
 
-        print msg
+        if not self.args[ARG_BATCH]:
+            print msg
+        else:
+            self.results.append(msg)
+
         return True
+
+
     def cache_feed(self, cache_name, feedname):
 
         feed_url = FEED_DATA[feedname]
@@ -263,7 +270,7 @@ class TvGuide:
 
             self.search(title, season, channel)
 
-        sys.exit()
+        return True
 
     def search(self, target_title, target_season=None, target_channel=None):
 
