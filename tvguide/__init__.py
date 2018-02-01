@@ -3,11 +3,14 @@ import re
 import sys
 import yaml
 import time
+import smtplib
 import textwrap
 import datetime
 import requests
 import argparse
 import xml.etree.ElementTree as ET
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 FEED_DEFAULT = 'FEED7DAYS'
 
@@ -29,6 +32,10 @@ CACHE_TIMEOUT = 43200
 CACHE_DIR = 'cache'
 DATA_DIR = 'data'
 DATA_CHANNELS = 'channels.yaml'
+
+EMAIL_TO = 'Steve.Pillinger@gmail.com'
+EMAIL_FROM = 'Steve.Pillinger'
+EMAIL_SUBJECT = 'TV Guide Search Results'
 
 YAML_UNCLASSIFIED = 'unclassified'
 YAML_INCLUDE = 'include'
@@ -318,9 +325,9 @@ class TvGuide:
 
                 channel = self.channels[channel_id]
 
-		if target_channel is not None and not channel_regexp.match(channel):
-		        continue
-	
+                if target_channel is not None and not channel_regexp.match(channel):
+                   continue
+
                 if episode is None:
 
                     # Check description for Season
@@ -341,7 +348,7 @@ class TvGuide:
 
                 if episode_season is None:
                     self.result('No series info: {0}'.format(programme_text))
-                    self.result("\t" + "\n\t".join(textwrap.wrap(desc.text, 60)))
+                    self.result("\t" + "\n\t".join(textwrap.wrap(desc.text, 60)) + "\n")
                     continue
 
                 if target_season is not None and episode_season != target_season:
@@ -349,8 +356,42 @@ class TvGuide:
 
                 self.result(programme_text)
                 if self.args[ARG_DESC]:
-                    self.result("\t" + "\n\t".join(textwrap.wrap(desc.text, 60)))
+                    self.result("\t" + "\n\t".join(textwrap.wrap(desc.text, 60)) + "\n")
 
         self.out_print("\n")
+
+        return True
+
+    def show_results(self):
+
+        if not self.results:
+            return True
+
+        outbuf = []
+        outbuf.append('Targets:')
+        outbuf.append('')
+
+        for target in self.targets:
+            str = "\t" + target['title'].title()
+            if 'season' in target:
+                str += ' (Season {0})'.format(target['season'])
+            if 'channel' in target:
+                str = str + ' [{0}]'.format(target['channel'].title())
+            outbuf.append(str)
+
+        outbuf.append('')
+        outbuf += self.results
+
+        msg = []
+        msg.append('To: {0}'.format(EMAIL_TO))
+        msg.append('From: {0}'.format(EMAIL_FROM))
+        msg.append('Subject: {0}'.format(EMAIL_SUBJECT))
+        msg.append('')
+        msg += outbuf
+        msg = "\n".join(msg)
+
+        s = smtplib.SMTP('localhost')
+        s.sendmail(EMAIL_FROM, EMAIL_TO, msg)
+        s.quit()
 
         return True

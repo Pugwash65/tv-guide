@@ -26,7 +26,7 @@ try:
     else:
         tv.search(target, season)
 
-    tv.results()
+    tv.show_results()
 
     sys.exit(0)
 
