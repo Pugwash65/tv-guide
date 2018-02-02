@@ -34,7 +34,7 @@ DATA_DIR = 'data'
 DATA_CHANNELS = 'channels.yaml'
 
 EMAIL_TO = 'Steve.Pillinger@gmail.com'
-EMAIL_FROM = 'Steve.Pillinger'
+EMAIL_FROM = 'S.M.Pillinger@cs.bham.ac.uk'
 EMAIL_SUBJECT = 'TV Guide Search Results'
 
 YAML_UNCLASSIFIED = 'unclassified'
@@ -180,6 +180,9 @@ class TvGuide:
         return True
 
     def load_targets(self, file):
+
+        if file[0] != '/':
+            file = os.path.join(self.basedir, file)
 
         f = open(file, 'r')
         yaml_data = f.read()
