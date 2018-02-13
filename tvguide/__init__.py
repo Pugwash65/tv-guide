@@ -115,7 +115,6 @@ class TvGuide:
 
         return True
 
-
     def cache_feed(self, cache_name, feedname):
 
         feed_url = FEED_DATA[feedname]
@@ -286,7 +285,7 @@ class TvGuide:
 
         feedname = self.args[ARG_FEED]
 
-        if target_season is not None and len(target_season) == 1:
+        if target_season is not None and len(target_season) >= 1:
             target_season = int(target_season)
 
         target_regexp = '{0}|new:\s*{0}'.format(target_title)
