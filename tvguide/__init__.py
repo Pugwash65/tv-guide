@@ -14,10 +14,15 @@ from email.mime.text import MIMEText
 
 FEED_DEFAULT = 'FEED7DAYS'
 
+# Feeds: All 24 Hour, All 72 Hour, Limited 7 Days
+
 FEED_DATA = {
-            'FEED24': 'http://www.xmltv.co.uk/feed/6549',
-            'FEED72': 'http://www.xmltv.co.uk/feed/6550',
-            'FEED7DAYS': 'http://www.xmltv.co.uk/feed/6582'
+#            'FEED24': 'http://www.xmltv.co.uk/feed/6549',
+#            'FEED72': 'http://www.xmltv.co.uk/feed/6550',
+#            'FEED7DAYS': 'http://www.xmltv.co.uk/feed/6582'
+            'FEED24': 'http://www.xmltv.co.uk/feed/6721',
+            'FEED72': 'http://www.xmltv.co.uk/feed/6715',
+            'FEED7DAYS': 'http://www.xmltv.co.uk/feed/6784'
 }
 
 XML_CHANNEL = 'channel'
