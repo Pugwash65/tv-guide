@@ -20,9 +20,9 @@ FEED_DATA = {
 #            'FEED24': 'http://www.xmltv.co.uk/feed/6549',
 #            'FEED72': 'http://www.xmltv.co.uk/feed/6550',
 #            'FEED7DAYS': 'http://www.xmltv.co.uk/feed/6582'
-            'FEED24': 'http://www.xmltv.co.uk/feed/6721',
-            'FEED72': 'http://www.xmltv.co.uk/feed/6715',
-            'FEED7DAYS': 'http://www.xmltv.co.uk/feed/6784'
+            'FEED24': 'http://www.xmltv.co.uk/feed/6743',
+            'FEED72': 'http://www.xmltv.co.uk/feed/8943',
+            'FEED7DAYS': 'http://www.xmltv.co.uk/feed/1897'
 }
 
 XML_CHANNEL = 'channel'
